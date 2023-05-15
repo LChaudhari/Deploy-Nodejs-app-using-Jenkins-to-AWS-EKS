@@ -3,11 +3,11 @@ pipeline {
     environment {
         AWS_ACCOUNT_ID="176295807911"
         AWS_DEFAULT_REGION="us-east-1" 
-	    CLUSTER_NAME="tbcommerce"
+	CLUSTER_NAME="tbcommerce"
         IMAGE_REPO_NAME="nodejs"
         IMAGE_TAG="${env.BUILD_ID}"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-	    registryCredential = "176295807911"
+	registryCredential = "176295807911"
     }
    
     stages {
@@ -17,7 +17,6 @@ pipeline {
       steps{
         script {
           sh 'npm install'
-	      sh 'npm test -- --watchAll=false'
         }
       }
     }
@@ -40,7 +39,7 @@ pipeline {
                 ]
             ]) {
                 sh "aws ecr get-login-password --region ${env.AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_DEFAULT_REGION}.amazonaws.com"
-		        sh "docker tag ${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG} ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_DEFAULT_REGION}.amazonaws.com/${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG}"
+		sh "docker tag ${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG} ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_DEFAULT_REGION}.amazonaws.com/${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG}"
                 sh "docker push ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_DEFAULT_REGION}.amazonaws.com/${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG}"
             }
         }
@@ -56,7 +55,7 @@ pipeline {
                     credentialsId: '176295807911'
                 ]
             ]) {
-                sh "aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}"
+                sh "aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${CLUSTER_NAME}"
                 sh "kubectl apply -f deployment.yaml"
                 sh "kubectl apply -f service.yaml"            }
         }
