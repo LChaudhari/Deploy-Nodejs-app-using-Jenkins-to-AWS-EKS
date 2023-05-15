@@ -55,7 +55,7 @@ pipeline {
                     credentialsId: '176295807911'
                 ]
             ]) {
-                sh "aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}"
+                sh "aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${CLUSTER_NAME}"
                 sh "kubectl apply -f deployment.yaml"
                 sh "kubectl apply -f service.yaml"            }
         }
